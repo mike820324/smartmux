@@ -12,7 +12,7 @@ def vimTransform(command_option):
     return "Escape ':e {0}'".format(os.path.join(currentDir, command_option))
 
 def weechatTransform(command_option):
-    return "/connect {0}".format(command_option)
+    return "'/connect {0}'".format(command_option)
 
 if __name__ == '__main__':
     print "Do not use this file directory"
