@@ -1,8 +1,22 @@
 import subprocess
 import shlex
 import argparse
+import pwd
 
-### Tmux Command Wrapper
+def userOfClient(pid):
+    shellCommand = "pstree -u {0}".format(pid)
+    p = subprocess.Popen(shlex.split(shellCommand), stdout=subprocess.PIPE)
+    output = p.stdout.read()
+
+    commandChain = [ command.strip() for command in output.split("---") if command.strip() != "" ]
+    
+    currentUser = ""
+    for command in commandChain:
+        if "(" in command:
+            currentUser = command.split("(")[1][:-1]
+    
+    return pwd.getpwnam(currentUser).pw_uid
+
 def listClient(search_type):
     if search_type == "session" or search_type == "system": # @fixme: how to search current session only
         command = "tmux list-panes -a -F '#{pane_id} #{pane_current_command} #{pane_pid}'"
@@ -16,7 +30,8 @@ def listClient(search_type):
         {
             "clientId": paneStrList[0], 
             "command": paneStrList[1],
-            "pid": paneStrList[2]
+            "pid": paneStrList[2],
+            "uid": userOfClient(paneStrList[2])
         }
         for paneStrList in map(lambda x: x.split(" "), output.split("\n"))
         if len(paneStrList) == 3
@@ -35,8 +50,6 @@ def switchClient(sessionId):
     command = "tmux switch-client -t {0}".format(sessionId)
     subprocess.call(shlex.split(command))
 
-# sending keys to session by sessionId
-# useful when telling vim to open files
 def sendKey(sessionId, value):
     command = "tmux send-keys -t {0} {1} Enter".format(sessionId, value)
     print command
