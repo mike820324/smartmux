@@ -3,7 +3,7 @@ import shlex
 import argparse
 import pwd
 
-def userOfClient(pid):
+def uidOfClient(pid):
     shellCommand = "pstree -u {0}".format(pid)
     p = subprocess.Popen(shlex.split(shellCommand), stdout=subprocess.PIPE)
     output = p.stdout.read()
@@ -31,7 +31,7 @@ def listClient(search_type):
             "clientId": paneStrList[0], 
             "command": paneStrList[1],
             "pid": paneStrList[2],
-            "uid": userOfClient(paneStrList[2])
+            "uid": uidOfClient(paneStrList[2])
         }
         for paneStrList in map(lambda x: x.split(" "), output.split("\n"))
         if len(paneStrList) == 3
@@ -54,3 +54,7 @@ def sendKey(sessionId, value):
     command = "tmux send-keys -t {0} {1} Enter".format(sessionId, value)
     print command
     subprocess.call(shlex.split(command))
+
+if __name__ == '__main__':
+    print "Do not use this file directory"
+    exit(1)

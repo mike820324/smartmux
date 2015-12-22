@@ -29,7 +29,7 @@ def findClientByCommand(search_type, command_selector):
     else:
         return targetIdList[0]
 
-def commandSwitcher(search_type, open_options, command_selector, command_options):
+def smartmux(search_type, open_options, command_selector, command_options):
     supportTransformers = {
             "vim": vimTransform,
             "weechat": weechatTransform
@@ -91,4 +91,4 @@ if __name__ == '__main__':
             "size": args.pane_size
     }
 
-    commandSwitcher(args.search_type, open_options, args.command_selector, args.command_options)
+    smartmux(args.search_type, open_options, args.command_selector, args.command_options)
