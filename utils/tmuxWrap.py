@@ -3,6 +3,15 @@ import shlex
 import argparse
 import pwd
 
+def currentPathClient(sessionId = None):
+    if sessionId == None:
+        command = "tmux display-message -p '#{pane_current_path}'"
+    else:
+        command = "tmux display-message -p -t {0} '#{pane_current_path}'".format(sessionId)
+    p = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE)
+    output = p.stdout.read()
+    return output.strip()
+
 def uidOfClient(pid):
     shellCommand = "pstree -u {0}".format(pid)
     p = subprocess.Popen(shlex.split(shellCommand), stdout=subprocess.PIPE)

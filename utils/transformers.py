@@ -1,3 +1,4 @@
+from utils.tmuxWrap import currentPathClient
 
 def defaultTransform(command_option):
     return command_option
@@ -6,7 +7,8 @@ def defaultTransform(command_option):
 def vimTransform(command_option):
     import os
     # use absolute path instead of relative path
-    currentDir = os.getcwd()
+    # currentDir = os.getcwd()
+    currentDir = currentPathClient()
     
     # ensure that vim is in normal mode
     return "Escape ':e {0}'".format(os.path.join(currentDir, command_option))
